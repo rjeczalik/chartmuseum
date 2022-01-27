@@ -1,0 +1,8 @@
+debug: true
+port: 8080
+storage.backend: github
+storage.github.prefix: charts
+depth: 1
+disableapi: true
+disablestatefiles: true
+cache.store: none
