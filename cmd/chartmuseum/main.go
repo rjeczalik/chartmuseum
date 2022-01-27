@@ -96,7 +96,7 @@ func cliHandler(c *cli.Context) {
 		AuthRealm:              conf.GetString("authrealm"),
 		AuthService:            conf.GetString("authservice"),
 		AuthCertPath:           conf.GetString("authcertpath"),
-		AuthActionsSearchPath: 	conf.GetString("authactionssearchpath"),
+		AuthActionsSearchPath:  conf.GetString("authactionssearchpath"),
 		DepthDynamic:           conf.GetBool("depthdynamic"),
 		CORSAllowOrigin:        conf.GetString("cors.alloworigin"),
 		WriteTimeout:           conf.GetInt("writetimeout"),
@@ -143,6 +143,8 @@ func backendFromConfig(conf *config.Config) storage.Backend {
 		backend = tencentBackendFromConfig(conf)
 	case "netease":
 		backend = neteaseBackendFromConfig(conf)
+	case "github":
+		backend = githubBackendFromConfig(conf)
 	default:
 		crash("Unsupported storage backend: ", storageFlag)
 	}
@@ -273,6 +275,17 @@ func neteaseBackendFromConfig(conf *config.Config) storage.Backend {
 	)
 }
 
+func githubBackendFromConfig(conf *config.Config) storage.Backend {
+	crashIfConfigMissingVars(conf, []string{"storage.github.org", "storage.github.repo", "storage.github.token"})
+
+	return storage.NewGitHubBackend(
+		conf.GetString("storage.github.org"),
+		conf.GetString("storage.github.repo"),
+		conf.GetString("storage.github.token"),
+		conf.GetString("storage.github.prefix"),
+	)
+}
+
 func storeFromConfig(conf *config.Config) cache.Store {
 	if conf.GetString("cache.store") == "" {
 		return nil
@@ -284,6 +297,8 @@ func storeFromConfig(conf *config.Config) cache.Store {
 	switch cacheFlag {
 	case "redis":
 		store = redisCacheFromConfig(conf)
+	case "none":
+		store = noneCacheFromConfig(conf)
 	default:
 		crash("Unsupported cache store: ", cacheFlag)
 	}
@@ -293,11 +308,15 @@ func storeFromConfig(conf *config.Config) cache.Store {
 
 func redisCacheFromConfig(conf *config.Config) cache.Store {
 	crashIfConfigMissingVars(conf, []string{"cache.redis.addr"})
-	return cache.Store(cache.NewRedisStore(
+	return cache.NewRedisStore(
 		conf.GetString("cache.redis.addr"),
 		conf.GetString("cache.redis.password"),
 		conf.GetInt("cache.redis.db"),
-	))
+	)
+}
+
+func noneCacheFromConfig(*config.Config) cache.Store {
+	return cache.NewNoneStore()
 }
 
 func crashIfConfigMissingVars(conf *config.Config, vars []string) {
