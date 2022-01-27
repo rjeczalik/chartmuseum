@@ -20,7 +20,7 @@ RUN CGO_ENABLED=0 GO111MODULE=on go build \
 
 FROM alpine:latest
 
-RUN apk add --no-cache cifs-utils ca-certificates
+RUN apk add --no-cache cifs-utils ca-certificates libc6-compat
 
 COPY --from=0 /chartmuseum /chartmuseum
 
