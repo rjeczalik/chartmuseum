@@ -237,7 +237,7 @@ var configVars = map[string]configVar{
 		Default: "",
 		CLIFlag: cli.StringFlag{
 			Name:   "cache",
-			Usage:  "cache store, can be one of: redis",
+			Usage:  "cache store, can be one of: redis, none",
 			EnvVar: "CACHE",
 		},
 	},
@@ -620,7 +620,42 @@ var configVars = map[string]configVar{
 			EnvVar: "STORAGE_NETEASE_ENDPOINT",
 		},
 	},
-
+	"storage.github.org": {
+		Type:    stringType,
+		Default: "",
+		CLIFlag: cli.StringFlag{
+			Name:   "storage-github-org",
+			Usage:  "GitHub organization name",
+			EnvVar: "STORAGE_GITHUB_ORG",
+		},
+	},
+	"storage.github.repo": {
+		Type:    stringType,
+		Default: "",
+		CLIFlag: cli.StringFlag{
+			Name:   "storage-github-repo",
+			Usage:  "GitHub repository name",
+			EnvVar: "STORAGE_GITHUB_REPO",
+		},
+	},
+	"storage.github.token": {
+		Type:    stringType,
+		Default: "",
+		CLIFlag: cli.StringFlag{
+			Name:   "storage-github-token",
+			Usage:  "OAuth2 token to authenticate with GitHub",
+			EnvVar: "STORAGE_GITHUB_TOKEN",
+		},
+	},
+	"storage.github.prefix": {
+		Type:    stringType,
+		Default: "",
+		CLIFlag: cli.StringFlag{
+			Name:   "storage-github-prefix",
+			Usage:  "Path prefix for the --storage-github-repo repository (optional)",
+			EnvVar: "STORAGE_GITHUB_PREFIX",
+		},
+	},
 	"chartpostformfieldname": {
 		Type:    stringType,
 		Default: "chart",
